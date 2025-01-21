@@ -10,7 +10,7 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String sayHello() {
-        return "Hello from SetMate Spring boot Backend!";
+        return "Hello World from SetMate Spring boot Backend!";
     }
 }
 
