@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:setmate_app/pages/create_account_page.dart';
 import 'package:setmate_app/pages/login_page.dart';
+import 'package:setmate_app/pages/main_page.dart';
+import 'package:setmate_app/pages/training_page.dart';
+import 'package:setmate_app/pages/history_page.dart';
+import 'package:setmate_app/pages/profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,10 +19,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'SetMate App',
       theme: ThemeData(primarySwatch: Colors.green),
-      initialRoute: '/login', // 初始路由
+      initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginPage(),
-        '/register': (context) => const CreateAccountPage(), // 注册页
+        '/register': (context) => const CreateAccountPage(),
+        '/main': (context) => const MainPage(),
+        '/training': (context) => TrainingPage(),
+        '/history': (context) => HistoryPage(),
+        '/profile': (context) => ProfilePage(),
       },
     );
   }
