@@ -12,6 +12,14 @@ class DailyTrainingDetail {
     required this.endTime,
     required this.exercises,
   });
+  Map<String, dynamic> toJson() => {
+  'trainingTitle': trainingTitle,
+  'note': note,
+  'startTime': startTime,
+  'endTime': endTime,
+  'exercises': exercises.map((e) => e.toJson()).toList(),
+};
+
 
   factory DailyTrainingDetail.fromJson(Map<String, dynamic> json) {
     return DailyTrainingDetail(
@@ -43,7 +51,18 @@ class Exercise {
     required this.weight,
     this.restTime,
     this.type,
-  });
+  }
+  );
+  Map<String, dynamic> toJson() => {
+  'exerciseId': exerciseId,
+  'exerciseName': exerciseName,
+  'sets': sets,
+  'reps': reps,
+  'weight': weight,
+  'type': type,
+  'restTime': restTime,
+};
+
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
     return Exercise(

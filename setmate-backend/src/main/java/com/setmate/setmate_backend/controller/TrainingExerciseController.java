@@ -60,19 +60,66 @@ public class TrainingExerciseController {
     /**
      * Delete an exercise by its ID
      */
-    @DeleteMapping("/delete/{exerciseId}")
-    public ResponseEntity<String> deleteExercise(@PathVariable Integer exerciseId) {
+    @DeleteMapping("/{exerciseId}")
+    public ResponseEntity<?> deleteExercise(@PathVariable Integer exerciseId) {
+
+        String username = getCurrentUsername();  // 从 token 获取用户名
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        TrainingExercise exercise = exerciseService.getExerciseById(exerciseId)
+                .orElseThrow(() -> new RuntimeException("Exercise not found"));
+
+        TrainingSession session = trainingSessionService.getSessionById(exercise.getTrainingId())
+                .orElseThrow(() -> new RuntimeException("Training session not found"));
+
+        System.out.println("🔍 当前登录用户: " + user.getUserId());
+        System.out.println("📦 当前训练属于用户: " + session.getUserId());
+
+        if (!session.getUserId().equals(user.getUserId())) {
+            return ResponseEntity.status(403).body("⛔️ You do not have permission to delete this exercise.");
+        }
+
         exerciseService.deleteExerciseById(exerciseId);
-        return ResponseEntity.ok("Exercise deleted successfully.");
+        return ResponseEntity.ok("✅ Exercise deleted successfully.");
     }
+
 
     /**
      * Update an existing exercise
      */
-    @PutMapping("/update")
-    public ResponseEntity<TrainingExercise> updateExercise(@RequestBody TrainingExercise exercise) {
-        return ResponseEntity.ok(exerciseService.updateExercise(exercise));
+    @PutMapping("/{exerciseId}")
+    public ResponseEntity<?> updateExercise(@PathVariable Integer exerciseId, @RequestBody TrainingExercise newData) {
+
+        String username = getCurrentUsername();  // 从 token 获取用户名
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        TrainingExercise old = exerciseService.getExerciseById(exerciseId)
+                .orElseThrow(() -> new RuntimeException("Exercise not found"));
+
+        TrainingSession session = trainingSessionService.getSessionById(old.getTrainingId())
+                .orElseThrow(() -> new RuntimeException("Training session not found"));
+        System.out.println("🔍 当前登录用户: " + user.getUserId());
+        System.out.println("📦 当前训练属于用户: " + session.getUserId());
+
+
+        if (!session.getUserId().equals(user.getUserId())) {
+            return ResponseEntity.status(403).body("⛔️ This exercise does not belong to you.");
+             }
+
+        // 安全验证通过，可以更新字段
+        old.setExerciseName(newData.getExerciseName());
+        old.setSets(newData.getSets());
+        old.setReps(newData.getReps());
+        old.setWeight(newData.getWeight());
+        old.setRestTime(newData.getRestTime());
+        old.setType(newData.getType());
+
+        TrainingExercise updated = exerciseService.updateExercise(old);
+        return ResponseEntity.ok(updated);
     }
+
 
     /**
      * Submit a list of exercises for a session

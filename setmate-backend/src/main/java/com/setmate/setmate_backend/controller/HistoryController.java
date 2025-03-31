@@ -61,7 +61,20 @@ public class HistoryController {
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return ResponseEntity.ok(historyService.getAllTrainingDetails(user.getUserId(), date));
+        List<DailyTrainingDetailDTO> list = historyService.getAllTrainingDetails(user.getUserId(), date);
+
+        System.out.println("📅 Total Training Sessions: " + list.size());
+
+        for (DailyTrainingDetailDTO dto : list) {
+            System.out.println("📦 Training Title: " + dto.getTrainingTitle());
+            System.out.println("🕐 Start Time: " + dto.getStartTime());
+            for (var e : dto.getExercises()) {
+                System.out.println("  - Name: " + e.getExerciseName() + ", Type: " + e.getType());
+            }
+        }
+
+        return ResponseEntity.ok(list);
     }
+
 
 }

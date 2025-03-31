@@ -5,6 +5,7 @@ import com.setmate.setmate_backend.repository.TrainingExerciseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TrainingExerciseServiceImpl implements TrainingExerciseService {
@@ -39,4 +40,9 @@ public class TrainingExerciseServiceImpl implements TrainingExerciseService {
     public List<TrainingExercise> addExercisesBatch(List<TrainingExercise> exercises) {
         return exerciseRepository.saveAll(exercises);
     }
+    @Override
+    public Optional<TrainingExercise> getExerciseById(Integer exerciseId) {
+        return exerciseRepository.findById(exerciseId);
+    }
+
 }

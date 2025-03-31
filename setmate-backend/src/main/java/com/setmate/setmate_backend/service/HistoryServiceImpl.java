@@ -106,6 +106,8 @@ public class HistoryServiceImpl implements HistoryService {
                         exercise.setSets(exerciseRs.getInt("sets"));
                         exercise.setWeight(exerciseRs.getDouble("weight"));
                         exercise.setRestTime(exerciseRs.getInt("rest_time"));
+                        exercise.setType(exerciseRs.getString("type"));
+
                         exercises.add(exercise);
                     }
                 }
@@ -165,6 +167,7 @@ public class HistoryServiceImpl implements HistoryService {
                         exercise.setSets(exerciseRs.getInt("sets"));
                         exercise.setWeight(exerciseRs.getDouble("weight"));
                         exercise.setRestTime(exerciseRs.getInt("rest_time"));
+                        exercise.setType(exerciseRs.getString("type"));
                         exercises.add(exercise);
                     }
                 }

@@ -9,6 +9,8 @@ const String usernameUrl = '$baseUrl/api/users/username';
 const String completeUrl = '$baseUrl/api/training/complete';
 const String historyUrl = '$baseUrl/api/history';
 const String profileUrl = '$baseUrl/api/user-profile';
+const String exerciseUrl = '$baseUrl/api/exercises';
+
 
 const Color kBackgroundColor = Color(0xFFF5F5F5);
 const Color kButtonColor = Color(0xFF2A6049);
