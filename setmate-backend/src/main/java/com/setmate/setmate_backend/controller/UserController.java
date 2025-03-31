@@ -2,6 +2,7 @@ package com.setmate.setmate_backend.controller;
 
 import com.setmate.setmate_backend.model.User;
 import com.setmate.setmate_backend.service.UserService;
+import com.setmate.setmate_backend.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,11 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
@@ -34,7 +37,6 @@ public class UserController {
         }
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
         try {
@@ -43,15 +45,23 @@ public class UserController {
             response.put("token", token);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            // 直接返回 JSON 格式错误消息
             Map<String, String> error = new HashMap<>();
             error.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
     }
 
+    @GetMapping("/username")
+    public ResponseEntity<Map<String, String>> getUsernameFromToken(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body(Map.of("message", "Missing or invalid Authorization header"));
+        }
 
-    // ✅ 全局异常捕获（简单写法）
+        String token = authHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        return ResponseEntity.ok(Map.of("username", username));
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public Map<String, String> handleRuntimeException(RuntimeException ex) {
         Map<String, String> error = new HashMap<>();

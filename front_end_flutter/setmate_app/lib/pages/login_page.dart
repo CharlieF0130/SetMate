@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:setmate_app/models/user.dart';
 import 'package:setmate_app/services/auth_service.dart';
+import 'package:setmate_app/services/token_service.dart';
 import 'package:setmate_app/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,17 +27,18 @@ class _LoginPageState extends State<LoginPage> {
     final AuthResult result = await AuthService().login(user);
 
     if (result.success) {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('jwtToken');
+      final token = await TokenService.getToken() ?? '';
+
       print("✅ Login successfully，JWT Token: $token");
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login successfully')),
       );
-      Navigator.pushNamed(context, '/main');
+      if (token != null && token.contains('.')) {
+  Navigator.pushReplacementNamed(context, '/main');
+}
 
 
-      // TODO: 导航
     } else {
       setState(() {
         _errorMessage = result.message ?? 'Login failed';

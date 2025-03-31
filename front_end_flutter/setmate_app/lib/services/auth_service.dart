@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:setmate_app/services/token_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import '../utils/constants.dart';
@@ -24,8 +25,8 @@ class AuthService {
         final body = jsonDecode(response.body);
         final token = body['token'];
 
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('jwtToken', token);
+        await TokenService.saveToken(token);
+
 
         return AuthResult(true);
       } else {

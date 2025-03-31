@@ -39,6 +39,7 @@ class _MainPageState extends State<MainPage> {
     final navBarHeight = screenHeight * 0.09; // 比如导航栏占屏幕高的 9%
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5), 
       body: pages[currentIndex],
       bottomNavigationBar: Container(
         height: navBarHeight,
