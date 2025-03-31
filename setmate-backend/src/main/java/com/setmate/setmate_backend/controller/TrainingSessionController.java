@@ -87,7 +87,7 @@ public class TrainingSessionController {
         session.setStartTime(LocalTime.parse((String) sessionData.get("startTime")));
         session.setEndTime(LocalTime.parse((String) sessionData.get("endTime")));
         session.setNote((String) sessionData.get("note"));
-        session.setTrainingType((String) sessionData.get("trainingType"));
+        session.setTrainingTitle((String) sessionData.get("trainingTitle"));
         session.setCustomType((Boolean) sessionData.get("isCustomType"));
 
         TrainingSession savedSession = trainingSessionService.addSession(session);

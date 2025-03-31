@@ -27,8 +27,8 @@ public class TrainingSession {
 
     private String note;
 
-    @Column(name = "training_type")
-    private String trainingType;
+    @Column(name = "training_title")
+    private String trainingTitle;
 
     @Column(name = "is_custom_type")
     private Boolean isCustomType = false;
@@ -95,12 +95,12 @@ public class TrainingSession {
         this.note = note;
     }
 
-    public String getTrainingType() {
-        return trainingType;
+    public String getTrainingTitle() {
+        return trainingTitle;
     }
 
-    public void setTrainingType(String trainingType) {
-        this.trainingType = trainingType;
+    public void setTrainingTitle(String trainingTitle) {
+        this.trainingTitle = trainingTitle;
     }
 
     public Boolean getCustomType() {

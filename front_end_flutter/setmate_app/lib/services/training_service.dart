@@ -16,6 +16,7 @@ class TrainingService {
   required DateTime endTime,
   required List<TrainingExercise> exercises,
   required String note,
+  required String trainingTitle,
 }) async {
   final token = await _getToken();
 
@@ -26,8 +27,9 @@ class TrainingService {
     'startTime': startTime.toIso8601String().substring(11, 19),
     'endTime': endTime.toIso8601String().substring(11, 19),
     'note': note,
-    'trainingType': 'General',
     'isCustomType': true,
+    'trainingTitle': trainingTitle.isEmpty ? 'Untitled' : trainingTitle,
+
   };
 
   final payload = {

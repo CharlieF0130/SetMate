@@ -25,6 +25,7 @@ public class TrainingExercise {
     @Column(nullable = false)
     private int reps;
 
+
     private Double weight;      // optional
     private Integer restTime;   // optional
     @Column(name = "type", nullable = true)
