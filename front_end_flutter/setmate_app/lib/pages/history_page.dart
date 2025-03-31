@@ -28,116 +28,168 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void showEditExerciseDialog(int trainingIndex, int exerciseIndex) {
-    final exercise = _dailyTrainings[trainingIndex].exercises[exerciseIndex];
-    final TextEditingController nameController =
-        TextEditingController(text: exercise.exerciseName);
-    final TextEditingController setsController =
-        TextEditingController(text: exercise.sets.toString());
-    final TextEditingController repsController =
-        TextEditingController(text: exercise.reps.toString());
-    final TextEditingController weightController =
-        TextEditingController(text: exercise.weight.toString());
-    final TextEditingController typeController =
-        TextEditingController(text: exercise.type ?? '');
-    final TextEditingController restTimeController =
-        TextEditingController(text: exercise.restTime?.toString() ?? '');
+  final exercise = _dailyTrainings[trainingIndex].exercises[exerciseIndex];
 
-    showBottomSheet(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: const Text("Edit Exercise"),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(labelText: "Name")),
-                TextField(
-                    controller: setsController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: "Sets")),
-                TextField(
-                    controller: repsController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: "Reps")),
-                TextField(
-                    controller: weightController,
-                    keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(labelText: "Weight (kg)")),
-                TextField(
-                    controller: typeController,
-                    decoration: const InputDecoration(labelText: "Type")),
-                TextField(
-                    controller: restTimeController,
-                    keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(labelText: "Rest Time (sec)")),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final updatedExercise = Exercise(
-                  exerciseId: exercise.exerciseId,
-                  exerciseName: nameController.text,
-                  sets: int.tryParse(setsController.text) ?? 0,
-                  reps: int.tryParse(repsController.text) ?? 0,
-                  weight: double.tryParse(weightController.text) ?? 0.0,
-                  type: typeController.text.isNotEmpty
-                      ? typeController.text
-                      : null,
-                  restTime: int.tryParse(restTimeController.text),
-                );
+  final nameController = TextEditingController(text: exercise.exerciseName);
+  final setsController = TextEditingController(text: exercise.sets.toString());
+  final repsController = TextEditingController(text: exercise.reps.toString());
+  final weightController = TextEditingController(text: exercise.weight.toString());
+  final restController = TextEditingController(text: exercise.restTime?.toString() ?? '');
+  final customTypeController = TextEditingController();
 
-                // 发送更新请求到后端
-                final success =
-                    await ApiService.updateExercise(updatedExercise);
+  final List<String> presetTypes = [
+    'Chest', 'Back', 'Legs', 'Glutes', 'Abs', 'Cardio', 'Custom'
+  ];
 
-                if (success) {
-                  // ✅ 1. 直接更新本地的训练数据
-                  setState(() {
-                    _dailyTrainings[trainingIndex].exercises[exerciseIndex] =
-                        updatedExercise;
-                  });
+  String? selectedType;
 
-                  // ✅ 2. 通知 modal 里的 PageView 刷新
-                  _modalSetState?.call(() {});
-
-                  // ✅ 3. 关闭弹窗
-                  if (context.mounted) Navigator.pop(context);
-
-                  // ✅ 4. 提示成功
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('✅ Exercise updated successfully!')),
-                    );
-                  }
-                } else {
-                  // ❌ 失败提示
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('❌ Failed to update exercise.')),
-                    );
-                  }
-                }
-              },
-              child: const Text("Save"),
-            ),
-          ],
-        );
-      },
-    );
+  // 如果原始类型是 preset，就选中；否则视为 custom
+  if (exercise.type != null && presetTypes.contains(exercise.type)) {
+    selectedType = exercise.type;
+  } else {
+    selectedType = 'Custom';
+    customTypeController.text = exercise.type ?? '';
   }
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setStateDialog) {
+          return AlertDialog(
+            backgroundColor: kBackgroundColor,
+            title: const Text("Edit Exercise",
+                style: TextStyle(color: Colors.black)),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                      controller: nameController,
+                      decoration:
+                          const InputDecoration(labelText: "Exercise Name")),
+                  TextField(
+                      controller: setsController,
+                      decoration: const InputDecoration(labelText: "Sets"),
+                      keyboardType: TextInputType.number),
+                  TextField(
+                      controller: repsController,
+                      decoration: const InputDecoration(labelText: "Reps"),
+                      keyboardType: TextInputType.number),
+                  TextField(
+                      controller: weightController,
+                      decoration:
+                          const InputDecoration(labelText: "Weight (kg)"),
+                      keyboardType: TextInputType.number),
+                  TextField(
+                      controller: restController,
+                      decoration:
+                          const InputDecoration(labelText: "Rest Time (sec)"),
+                      keyboardType: TextInputType.number),
+                  const SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    decoration:
+                        const InputDecoration(labelText: "Exercise Type"),
+                        dropdownColor: Colors.white,
+                    value: selectedType,
+                    items: presetTypes.map((type) {
+                      return DropdownMenuItem(
+                        value: type,
+                        child: Text(type),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setStateDialog(() {
+                        selectedType = value;
+                      });
+                    },
+                  ),
+                  if (selectedType == 'Custom')
+                    TextField(
+                      controller: customTypeController,
+                      decoration:
+                          const InputDecoration(labelText: "Custom Type"),
+                    ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(
+                      width: 1,
+                      color: Color(0xFFEC744A),
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                onPressed: () async {
+                  final type = selectedType == 'Custom'
+                      ? customTypeController.text
+                      : selectedType;
+
+                  final updatedExercise = Exercise(
+                    exerciseId: exercise.exerciseId,
+                    exerciseName: nameController.text,
+                    sets: int.tryParse(setsController.text) ?? 0,
+                    reps: int.tryParse(repsController.text) ?? 0,
+                    weight: double.tryParse(weightController.text) ?? 0.0,
+                    restTime: int.tryParse(restController.text),
+                    type: type,
+                  );
+
+                  final success = await ApiService.updateExercise(updatedExercise);
+
+                  if (success) {
+                    setState(() {
+                      _dailyTrainings[trainingIndex].exercises[exerciseIndex] =
+                          updatedExercise;
+                    });
+
+                    _modalSetState?.call(() {});
+                    if (context.mounted) Navigator.pop(context);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('✅ Exercise updated successfully!')),
+                      );
+                    }
+                  } else {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('❌ Failed to update exercise.')),
+                      );
+                    }
+                  }
+                },
+                child: const Text(
+                  "Save",
+                  style: TextStyle(
+                    color: Color(0xFFEC744A),
+                    fontSize: 14,
+                    fontFamily: 'PingFang SC',
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
 
   Future<void> _loadCalendarData(DateTime day) async {
     try {

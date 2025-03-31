@@ -58,14 +58,15 @@ class _ProfilePageState extends State<ProfilePage> {
         print("✅ New profile created. Refetching...");
         final newProfile = await ProfileService.fetchProfile();
         if (newProfile != null) {
-          _controllers['age']!.text = newProfile.age?.toString() ?? '';
-          _controllers['height']!.text = newProfile.height?.toString() ?? '';
+          _controllers['age']!.text = newProfile.age?.toString() ?? 'unknown';
+          _controllers['height']!.text =
+              newProfile.height?.toString() ?? 'unknown';
           _controllers['currentWeight']!.text =
-              newProfile.currentWeight?.toString() ?? '';
+              newProfile.currentWeight?.toString() ?? 'unknown';
           _controllers['goalWeight']!.text =
-              newProfile.goalWeight?.toString() ?? '';
+              newProfile.goalWeight?.toString() ?? 'unknown';
           _controllers['bodyFatPercentage']!.text =
-              newProfile.bodyFatPercentage?.toString() ?? '';
+              newProfile.bodyFatPercentage?.toString() ?? 'unknown';
           setState(() {
             _profile = newProfile;
             _loading = false;
@@ -260,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
 
             const SizedBox(height: 24),
-            // Wrap 外层加 Center
+   
             Center(
               child: Wrap(
                 alignment: WrapAlignment.center,
@@ -282,7 +283,8 @@ class _ProfilePageState extends State<ProfilePage> {
             Center(
               child: GestureDetector(
                 onTap: () async {
-                  await TokenService.clearToken(); // 使用你封装的方法
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.clear(); // ✅ 清空所有 SharedPreferences
                   Navigator.pushReplacementNamed(context, '/login');
                 },
                 child: Container(

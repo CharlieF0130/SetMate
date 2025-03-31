@@ -81,14 +81,13 @@ public class UserServiceImpl implements UserService {
     public String login(User loginRequest) {
         String sql = "SELECT * FROM users WHERE email = ?";
 
-        // 打印调试用
         System.out.println("Executing SQL: " + sql);
         System.out.println("Email: " + loginRequest.getEmail());
 
         User user = jdbcTemplate.query(sql, rs -> {
             if (rs.next()) {
                 User u = new User();
-                u.setUserId(rs.getInt("user_id")); // ✅ 修正字段名
+                u.setUserId(rs.getInt("user_id"));
                 u.setUsername(rs.getString("username"));
                 u.setEmail(rs.getString("email"));
                 u.setPassword(rs.getString("password"));
