@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String register(User user) {
-        // 检查 email 和 username 是否已存在
         String emailSql = "SELECT COUNT(*) FROM users WHERE email = ?";
         String usernameSql = "SELECT COUNT(*) FROM users WHERE username = ?";
 
@@ -54,8 +53,6 @@ public class UserServiceImpl implements UserService {
         if (usernameCount != null && usernameCount > 0) {
             throw new RuntimeException("Username already exists");
         }
-
-        // 插入用户
         String insertSql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 
