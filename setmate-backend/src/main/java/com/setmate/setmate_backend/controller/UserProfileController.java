@@ -61,6 +61,7 @@ public class UserProfileController {
         profile.setCurrentWeight(newProfileData.getCurrentWeight());
         profile.setGoalWeight(newProfileData.getGoalWeight());
         profile.setBodyFatPercentage(newProfileData.getBodyFatPercentage());
+        profile.setGoalDailyTime(newProfileData.getGoalDailyTime());
 
         UserProfile saved = userProfileService.saveOrUpdate(profile);
         return ResponseEntity.ok(saved);
@@ -97,7 +98,8 @@ public class UserProfileController {
                 profile.getHeight(),
                 profile.getCurrentWeight(),
                 profile.getGoalWeight(),
-                profile.getBodyFatPercentage()
+                profile.getBodyFatPercentage(),
+                profile.getGoalDailyTime()
         );
 
         return ResponseEntity.ok(dto);

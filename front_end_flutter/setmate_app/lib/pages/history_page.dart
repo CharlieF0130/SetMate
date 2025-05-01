@@ -28,168 +28,182 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void showEditExerciseDialog(int trainingIndex, int exerciseIndex) {
-  final exercise = _dailyTrainings[trainingIndex].exercises[exerciseIndex];
+    final exercise = _dailyTrainings[trainingIndex].exercises[exerciseIndex];
 
-  final nameController = TextEditingController(text: exercise.exerciseName);
-  final setsController = TextEditingController(text: exercise.sets.toString());
-  final repsController = TextEditingController(text: exercise.reps.toString());
-  final weightController = TextEditingController(text: exercise.weight.toString());
-  final restController = TextEditingController(text: exercise.restTime?.toString() ?? '');
-  final customTypeController = TextEditingController();
+    final nameController = TextEditingController(text: exercise.exerciseName);
+    final setsController =
+        TextEditingController(text: exercise.sets.toString());
+    final repsController =
+        TextEditingController(text: exercise.reps.toString());
+    final weightController =
+        TextEditingController(text: exercise.weight.toString());
+    final restController =
+        TextEditingController(text: exercise.restTime?.toString() ?? '');
+    final customTypeController = TextEditingController();
 
-  final List<String> presetTypes = [
-    'Chest', 'Back', 'Legs', 'Glutes', 'Abs', 'Cardio', 'Custom'
-  ];
+    final List<String> presetTypes = [
+      'Chest',
+      'Back',
+      'Legs',
+      'Glutes',
+      'Abs',
+      'Cardio',
+      'Custom'
+    ];
 
-  String? selectedType;
+    String? selectedType;
 
-  // 如果原始类型是 preset，就选中；否则视为 custom
-  if (exercise.type != null && presetTypes.contains(exercise.type)) {
-    selectedType = exercise.type;
-  } else {
-    selectedType = 'Custom';
-    customTypeController.text = exercise.type ?? '';
-  }
+    // 如果原始类型是 preset，就选中；否则视为 custom
+    if (exercise.type != null && presetTypes.contains(exercise.type)) {
+      selectedType = exercise.type;
+    } else {
+      selectedType = 'Custom';
+      customTypeController.text = exercise.type ?? '';
+    }
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setStateDialog) {
-          return AlertDialog(
-            backgroundColor: kBackgroundColor,
-            title: const Text("Edit Exercise",
-                style: TextStyle(color: Colors.black)),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextField(
-                      controller: nameController,
-                      decoration:
-                          const InputDecoration(labelText: "Exercise Name")),
-                  TextField(
-                      controller: setsController,
-                      decoration: const InputDecoration(labelText: "Sets"),
-                      keyboardType: TextInputType.number),
-                  TextField(
-                      controller: repsController,
-                      decoration: const InputDecoration(labelText: "Reps"),
-                      keyboardType: TextInputType.number),
-                  TextField(
-                      controller: weightController,
-                      decoration:
-                          const InputDecoration(labelText: "Weight (kg)"),
-                      keyboardType: TextInputType.number),
-                  TextField(
-                      controller: restController,
-                      decoration:
-                          const InputDecoration(labelText: "Rest Time (sec)"),
-                      keyboardType: TextInputType.number),
-                  const SizedBox(height: 10),
-                  DropdownButtonFormField<String>(
-                    decoration:
-                        const InputDecoration(labelText: "Exercise Type"),
-                        dropdownColor: Colors.white,
-                    value: selectedType,
-                    items: presetTypes.map((type) {
-                      return DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setStateDialog(() {
-                        selectedType = value;
-                      });
-                    },
-                  ),
-                  if (selectedType == 'Custom')
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              backgroundColor: kBackgroundColor,
+              title: const Text("Edit Exercise",
+                  style: TextStyle(color: Colors.black)),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
                     TextField(
-                      controller: customTypeController,
+                        controller: nameController,
+                        decoration:
+                            const InputDecoration(labelText: "Exercise Name")),
+                    TextField(
+                        controller: setsController,
+                        decoration: const InputDecoration(labelText: "Sets"),
+                        keyboardType: TextInputType.number),
+                    TextField(
+                        controller: repsController,
+                        decoration: const InputDecoration(labelText: "Reps"),
+                        keyboardType: TextInputType.number),
+                    TextField(
+                        controller: weightController,
+                        decoration:
+                            const InputDecoration(labelText: "Weight (kg)"),
+                        keyboardType: TextInputType.number),
+                    TextField(
+                        controller: restController,
+                        decoration:
+                            const InputDecoration(labelText: "Rest Time (sec)"),
+                        keyboardType: TextInputType.number),
+                    const SizedBox(height: 10),
+                    DropdownButtonFormField<String>(
                       decoration:
-                          const InputDecoration(labelText: "Custom Type"),
+                          const InputDecoration(labelText: "Exercise Type"),
+                      dropdownColor: Colors.white,
+                      value: selectedType,
+                      items: presetTypes.map((type) {
+                        return DropdownMenuItem(
+                          value: type,
+                          child: Text(type),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setStateDialog(() {
+                          selectedType = value;
+                        });
+                      },
                     ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(color: Colors.black),
+                    if (selectedType == 'Custom')
+                      TextField(
+                        controller: customTypeController,
+                        decoration:
+                            const InputDecoration(labelText: "Custom Type"),
+                      ),
+                  ],
                 ),
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(
-                      width: 1,
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        width: 1,
+                        color: Color(0xFFEC744A),
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                  ),
+                  onPressed: () async {
+                    final type = selectedType == 'Custom'
+                        ? customTypeController.text
+                        : selectedType;
+
+                    final updatedExercise = Exercise(
+                      exerciseId: exercise.exerciseId,
+                      exerciseName: nameController.text,
+                      sets: int.tryParse(setsController.text) ?? 0,
+                      reps: int.tryParse(repsController.text) ?? 0,
+                      weight: double.tryParse(weightController.text) ?? 0.0,
+                      restTime: int.tryParse(restController.text),
+                      type: type,
+                    );
+
+                    final success =
+                        await ApiService.updateExercise(updatedExercise);
+
+                    if (success) {
+                      setState(() {
+                        _dailyTrainings[trainingIndex]
+                            .exercises[exerciseIndex] = updatedExercise;
+                      });
+
+                      _modalSetState?.call(() {});
+                      if (context.mounted) Navigator.pop(context);
+
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content:
+                                  Text('✅ Exercise updated successfully!')),
+                        );
+                      }
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('❌ Failed to update exercise.')),
+                        );
+                      }
+                    }
+                  },
+                  child: const Text(
+                    "Save",
+                    style: TextStyle(
                       color: Color(0xFFEC744A),
+                      fontSize: 14,
+                      fontFamily: 'PingFang SC',
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
-                onPressed: () async {
-                  final type = selectedType == 'Custom'
-                      ? customTypeController.text
-                      : selectedType;
-
-                  final updatedExercise = Exercise(
-                    exerciseId: exercise.exerciseId,
-                    exerciseName: nameController.text,
-                    sets: int.tryParse(setsController.text) ?? 0,
-                    reps: int.tryParse(repsController.text) ?? 0,
-                    weight: double.tryParse(weightController.text) ?? 0.0,
-                    restTime: int.tryParse(restController.text),
-                    type: type,
-                  );
-
-                  final success = await ApiService.updateExercise(updatedExercise);
-
-                  if (success) {
-                    setState(() {
-                      _dailyTrainings[trainingIndex].exercises[exerciseIndex] =
-                          updatedExercise;
-                    });
-
-                    _modalSetState?.call(() {});
-                    if (context.mounted) Navigator.pop(context);
-
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('✅ Exercise updated successfully!')),
-                      );
-                    }
-                  } else {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('❌ Failed to update exercise.')),
-                      );
-                    }
-                  }
-                },
-                child: const Text(
-                  "Save",
-                  style: TextStyle(
-                    color: Color(0xFFEC744A),
-                    fontSize: 14,
-                    fontFamily: 'PingFang SC',
-                    fontWeight: FontWeight.w500,
-                    height: 1.5,
                   ),
                 ),
-              ),
-            ],
-          );
-        },
-      );
-    },
-  );
-}
-
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   Future<void> _loadCalendarData(DateTime day) async {
     try {
@@ -498,31 +512,39 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF2A6049),
-        title: const Text(
-          'Training History',
-          style: TextStyle(color: Colors.white),
+        backgroundColor: kBackgroundColor,
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF2A6049),
+          title: const Text(
+            'Training History',
+            style: TextStyle(color: Colors.white),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: TableCalendar(
-        focusedDay: _focusedDay,
-        firstDay: DateTime(2022),
-        lastDay: DateTime(2030),
-        eventLoader: _getEventsForDay,
-        selectedDayPredicate: (day) => false,
-        onDaySelected: _onDaySelected,
-        onPageChanged: (focusedDay) {
-          _focusedDay = focusedDay;
-          _loadCalendarData(focusedDay);
-        },
-        calendarStyle: const CalendarStyle(
-          markerDecoration:
-              BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
-        ),
-      ),
-    );
+        body: TableCalendar(
+          focusedDay: _focusedDay,
+          firstDay: DateTime(2022),
+          lastDay: DateTime(2030),
+          calendarFormat: CalendarFormat.month,
+          availableCalendarFormats: const {
+            CalendarFormat.month: 'Month',
+          },
+          headerVisible: true,
+          headerStyle: const HeaderStyle(
+            formatButtonVisible: false,
+            titleCentered: true,
+          ),
+          eventLoader: _getEventsForDay,
+          selectedDayPredicate: (day) => false,
+          onDaySelected: _onDaySelected,
+          onPageChanged: (focusedDay) {
+            _focusedDay = focusedDay;
+            _loadCalendarData(focusedDay);
+          },
+          calendarStyle: const CalendarStyle(
+            markerDecoration:
+                BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
+          ),
+        ));
   }
 }

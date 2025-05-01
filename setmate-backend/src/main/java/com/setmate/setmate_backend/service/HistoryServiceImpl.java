@@ -2,6 +2,7 @@ package com.setmate.setmate_backend.service;
 
 import com.setmate.setmate_backend.DTO.CalendarSummaryDTO;
 import com.setmate.setmate_backend.DTO.DailyTrainingDetailDTO;
+import com.setmate.setmate_backend.DTO.ExerciseSummaryDTO;
 import com.setmate.setmate_backend.model.TrainingExercise;
 import com.setmate.setmate_backend.model.TrainingSession;
 import com.setmate.setmate_backend.repository.TrainingExerciseRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,6 +191,75 @@ public class HistoryServiceImpl implements HistoryService {
 
         return result;
     }
+
+    @Override
+    public ExerciseSummaryDTO getSummary(int userId, String range, String startDateStr) {
+        LocalDate startDate = LocalDate.parse(startDateStr);
+        List<Double> result = new ArrayList<>();
+        String unit = "";  // ✅ 提前定义 unit
+
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT date, start_time, end_time FROM training_sessions WHERE user_id = ? AND date >= ? AND date <= ?";
+
+            LocalDate endDate;
+            switch (range.toLowerCase()) {
+                case "week":
+                    endDate = startDate.plusDays(6);
+                    unit = "day";
+                    for (int i = 0; i < 7; i++) result.add(0.0);
+                    break;
+                case "month":
+                    endDate = startDate.plusMonths(1).minusDays(1);
+                    unit = "week";
+                    for (int i = 0; i < 5; i++) result.add(0.0);
+                    break;
+                case "year":
+                    endDate = startDate.plusYears(1).minusDays(1);
+                    unit = "month";
+                    for (int i = 0; i < 12; i++) result.add(0.0);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported range: " + range);
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, userId);
+                ps.setDate(2, Date.valueOf(startDate));
+                ps.setDate(3, Date.valueOf(endDate));
+
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    LocalDate date = rs.getDate("date").toLocalDate();
+                    LocalTime start = rs.getTime("start_time").toLocalTime();
+                    LocalTime end = rs.getTime("end_time").toLocalTime();
+                    double minutes = java.time.Duration.between(start, end).toMinutes();
+
+                    int index = 0;
+                    switch (range.toLowerCase()) {
+                        case "week":
+                            index = (int) java.time.temporal.ChronoUnit.DAYS.between(startDate, date);
+                            break;
+                        case "month":
+                            index = (date.getDayOfMonth() - 1) / 7;
+                            break;
+                        case "year":
+                            index = date.getMonthValue() - 1;
+                            break;
+                    }
+
+                    if (index >= 0 && index < result.size()) {
+                        result.set(index, result.get(index) + minutes);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to load summary data", e);
+        }
+
+        return new ExerciseSummaryDTO(unit, result);
+    }
+
 
 
 }

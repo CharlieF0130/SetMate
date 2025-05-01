@@ -27,7 +27,18 @@ public class UserProfile {
     private Double goalWeight; // 单位：kg
 
     @Column(name = "body_fat_percentage")
-    private Double bodyFatPercentage; // 单位：%
+    private Double bodyFatPercentage;// 单位：%
+    @Column(name = "goal_daily_time")
+    private Integer goalDailyTime;
+
+    public Integer getGoalDailyTime() {
+        return goalDailyTime;
+    }
+
+    public void setGoalDailyTime(Integer goalDailyTime) {
+        this.goalDailyTime = goalDailyTime;
+    }
+
 
     public UserProfile() {
     }

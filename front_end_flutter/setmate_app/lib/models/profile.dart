@@ -1,10 +1,11 @@
 class UserProfile {
-  final String? username; // ✅ 改成可选参数
+  final String? username;
   int? age;
   double? height;
   double? currentWeight;
   double? goalWeight;
   double? bodyFatPercentage;
+  int? goalDailyTime; // ✅ 新增字段
 
   UserProfile({
     this.username,
@@ -13,6 +14,7 @@ class UserProfile {
     this.currentWeight,
     this.goalWeight,
     this.bodyFatPercentage,
+    this.goalDailyTime, // ✅ 加入构造函数
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class UserProfile {
       currentWeight: (json['currentWeight'] as num?)?.toDouble(),
       goalWeight: (json['goalWeight'] as num?)?.toDouble(),
       bodyFatPercentage: (json['bodyFatPercentage'] as num?)?.toDouble(),
+      goalDailyTime: json['goalDailyTime'], // ✅ 反序列化
     );
   }
 
@@ -33,6 +36,7 @@ class UserProfile {
       'currentWeight': currentWeight,
       'goalWeight': goalWeight,
       'bodyFatPercentage': bodyFatPercentage,
+      'goalDailyTime': goalDailyTime, // ✅ 序列化
     };
   }
 }

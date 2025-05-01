@@ -7,17 +7,20 @@ public class UserProfileDTO {
     private Double currentWeight;
     private Double goalWeight;
     private Double bodyFatPercentage;
+    private Integer goalDailyTime;
+
 
     public UserProfileDTO() {
     }
 
-    public UserProfileDTO(String username, Integer age, Double height, Double currentWeight, Double goalWeight, Double bodyFatPercentage) {
+    public UserProfileDTO(String username, Integer age, Double height, Double currentWeight, Double goalWeight, Double bodyFatPercentage, Integer goalDailyTime) {
         this.username = username;
         this.age = age;
         this.height = height;
         this.currentWeight = currentWeight;
         this.goalWeight = goalWeight;
         this.bodyFatPercentage = bodyFatPercentage;
+        this.goalDailyTime = goalDailyTime;
     }
 
     // Getters and setters
@@ -68,4 +71,12 @@ public class UserProfileDTO {
     public void setBodyFatPercentage(Double bodyFatPercentage) {
         this.bodyFatPercentage = bodyFatPercentage;
     }
+    public Integer getGoalDailyTime() {
+        return goalDailyTime;
+    }
+
+    public void setGoalDailyTime(Integer goalDailyTime) {
+        this.goalDailyTime = goalDailyTime;
+    }
+
 }

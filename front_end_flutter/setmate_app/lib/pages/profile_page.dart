@@ -261,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
 
             const SizedBox(height: 24),
-   
+
             Center(
               child: Wrap(
                 alignment: WrapAlignment.center,
