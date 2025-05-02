@@ -394,39 +394,42 @@ class _ExerciseSummaryPageState extends State<ExerciseSummaryPage> {
             ),
             DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                value: selectedRange,
-                dropdownColor: Colors.white,
-                style: const TextStyle(color: Colors.black),
-                iconEnabledColor: Colors.white,
-                selectedItemBuilder: (BuildContext context) {
-                  return ranges.map((String item) {
-                    return Row(
-                      children: [
-                        Text(item, style: const TextStyle(color: Colors.white)),
-                      ],
+                  value: selectedRange,
+                  dropdownColor: Colors.white,
+                  style: const TextStyle(color: Colors.black),
+                  iconEnabledColor: Colors.white,
+                  selectedItemBuilder: (BuildContext context) {
+                    return ranges.map((String item) {
+                      return Row(
+                        children: [
+                          Text(item,
+                              style: const TextStyle(color: Colors.white)),
+                        ],
+                      );
+                    }).toList();
+                  },
+                  items: ranges.map((range) {
+                    return DropdownMenuItem<String>(
+                      value: range,
+                      child: Text(range),
                     );
-                  }).toList();
-                },
-                items: ranges.map((range) {
-                  return DropdownMenuItem<String>(
-                    value: range,
-                    child: Text(range),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      selectedRange = value;
-                      if (value == 'Week') {
-                        currentStartDate = _getStartOfWeek(DateTime.now());
-                      } else {
-                        currentStartDate = DateTime.now();
-                      }
-                    });
-                    _fetchChartData();
-                  }
-                },
-              ),
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        selectedRange = value;
+                        if (value == 'Week') {
+                          currentStartDate = _getStartOfWeek(DateTime.now());
+                        } else if (value == 'Month') {
+                          currentStartDate = DateTime(
+                              DateTime.now().year, DateTime.now().month);
+                        } else if (value == 'Year') {
+                          currentStartDate = DateTime(DateTime.now().year);
+                        }
+                      });
+                      _fetchChartData();
+                    }
+                  }),
             )
           ],
         ),
