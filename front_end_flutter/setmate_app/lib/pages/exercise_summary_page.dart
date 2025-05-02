@@ -38,15 +38,20 @@ class _ExerciseSummaryPageState extends State<ExerciseSummaryPage> {
     final profile = await ProfileService.fetchProfile();
     if (profile != null) {
       setState(() {
-        goalDailyTime = profile.goalDailyTime?.toString() ?? '60';
-        goalWeight = '${profile.goalWeight?.toStringAsFixed(1) ?? '55'}kg';
+        goalDailyTime = profile.goalDailyTime?.toString() ?? ' UNKNOWN';
+        goalWeight = '${profile.goalWeight?.toStringAsFixed(1) ?? 'UNKNOWN'}kg';
         currentWeight =
-            '${profile.currentWeight?.toStringAsFixed(1) ?? '60'}kg';
+            '${profile.currentWeight?.toStringAsFixed(1) ?? 'UNKNOWN'}kg';
       });
     }
   }
 
   void _fetchChartData() async {
+    // 对 Week 视图做“周一”对齐
+    if (selectedRange == 'Week') {
+      currentStartDate = _getStartOfWeek(currentStartDate);
+    }
+
     final startStr = DateFormat('yyyy-MM-dd').format(currentStartDate);
     final summary = await SummaryService.fetchSummary(
         selectedRange.toLowerCase(), startStr);
@@ -75,6 +80,15 @@ class _ExerciseSummaryPageState extends State<ExerciseSummaryPage> {
       avgMinutes = totalMinutes / divisor;
       chartUnit = summary.unit;
     });
+
+    print('=== Summary Chart Debug ===');
+    print('Range: $selectedRange');
+    print('Start Date: $currentStartDate');
+    print('Chart Unit: $chartUnit');
+    print('Chart Values: $chartValues');
+    print('Total Minutes: $totalMinutes');
+    print('Average Minutes per day: ${avgMinutes.toStringAsFixed(3)}');
+    print('===========================');
   }
 
   bool _isAtLatestPeriod() {
@@ -366,7 +380,7 @@ class _ExerciseSummaryPageState extends State<ExerciseSummaryPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final timeDisplay = '${avgMinutes.toStringAsFixed(1)}/${goalDailyTime} min';
+    final timeDisplay = '${avgMinutes.toStringAsFixed(3)}/${goalDailyTime} min';
 
     return Scaffold(
       backgroundColor: kButtonColor,
@@ -403,6 +417,11 @@ class _ExerciseSummaryPageState extends State<ExerciseSummaryPage> {
                   if (value != null) {
                     setState(() {
                       selectedRange = value;
+                      if (value == 'Week') {
+                        currentStartDate = _getStartOfWeek(DateTime.now());
+                      } else {
+                        currentStartDate = DateTime.now();
+                      }
                     });
                     _fetchChartData();
                   }

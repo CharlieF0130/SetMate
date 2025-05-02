@@ -13,7 +13,7 @@ import java.util.Collections;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
-
+    // ORM
     @Autowired
     public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -23,8 +23,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        // 设置 ROLE_USER 权限
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),

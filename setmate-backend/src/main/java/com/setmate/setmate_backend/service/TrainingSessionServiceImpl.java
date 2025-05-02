@@ -11,7 +11,7 @@ import java.util.Optional;
 public class TrainingSessionServiceImpl implements TrainingSessionService {
 
     private final TrainingSessionRepository sessionRepository;
-
+    // ORM
     public TrainingSessionServiceImpl(TrainingSessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
     }

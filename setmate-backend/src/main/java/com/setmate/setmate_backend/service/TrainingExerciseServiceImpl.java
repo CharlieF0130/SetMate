@@ -11,7 +11,7 @@ import java.util.Optional;
 public class TrainingExerciseServiceImpl implements TrainingExerciseService {
 
     private final TrainingExerciseRepository exerciseRepository;
-
+    // ORM
     public TrainingExerciseServiceImpl(TrainingExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
     }

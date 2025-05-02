@@ -195,6 +195,14 @@ public class HistoryServiceImpl implements HistoryService {
         return result;
     }
 
+    /**
+     * Retrieves summarized exercise duration for a user over a specified range (week, month, year).
+     * <p>
+     * Uses PreparedStatement to fetch training session date and time range.
+     * Calculates duration in minutes and maps them to day/week/month buckets.
+     * Bound parameters are used to prevent SQL injection.
+     * Does not use Spring Data JPA — relies on raw JDBC access.
+     */
     @Override
     public ExerciseSummaryDTO getSummary(int userId, String range, String startDateStr) {
         LocalDate startDate = LocalDate.parse(startDateStr);
@@ -235,7 +243,8 @@ public class HistoryServiceImpl implements HistoryService {
                     LocalDate date = rs.getDate("date").toLocalDate();
                     LocalTime start = rs.getTime("start_time").toLocalTime();
                     LocalTime end = rs.getTime("end_time").toLocalTime();
-                    double minutes = java.time.Duration.between(start, end).toMinutes();
+                    double minutes = java.time.Duration.between(start, end).toMillis() / 60000.0;
+
 
                     int index = 0;
                     switch (range.toLowerCase()) {
