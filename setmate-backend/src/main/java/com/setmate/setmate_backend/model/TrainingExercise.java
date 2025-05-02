@@ -6,7 +6,9 @@ import jakarta.persistence.*;
  * Represents an exercise within a training session.
  */
 @Entity
-@Table(name = "training_exercises")
+@Table(name = "training_exercises", indexes = {
+        @Index(name = "idx_exercise_trainingid", columnList = "trainingId")
+})
 public class TrainingExercise {
 
     @Id

@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
  * Represents a user's training session.
  */
 @Entity
-@Table(name = "training_sessions")
+@Table(name = "training_sessions", indexes = {
+        @Index(name = "idx_training_user_date", columnList = "userId, date")
+})
+
 public class TrainingSession {
 
     @Id

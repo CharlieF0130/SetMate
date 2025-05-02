@@ -3,7 +3,9 @@ package com.setmate.setmate_backend.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "user_profile")
+@Table(name = "user_profile", indexes = {
+        @Index(name = "idx_user_profile_userid", columnList = "user_Id")
+})
 public class UserProfile {
 
     @Id
