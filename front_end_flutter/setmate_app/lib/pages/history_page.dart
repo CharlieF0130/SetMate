@@ -243,6 +243,49 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
+  void _confirmAndDeleteSession(int trainingId) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Session'),
+        content: const Text(
+            'Are you sure you want to delete this training session and all its exercises?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    final success = await ApiService.deleteSession(trainingId);
+
+    if (success) {
+  if (context.mounted) {
+    Navigator.pop(context); // 关闭 modal
+    await _loadCalendarData(_focusedDay); // ✅ 加上这句，刷新蓝点
+    _onDaySelected(_focusedDay, _focusedDay); // 重新加载详情
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('✅ Session deleted successfully')),
+    );
+  }
+}
+ else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('❌ Failed to delete session')),
+        );
+      }
+    }
+  }
+
   Future<void> _onDaySelected(DateTime selectedDay, DateTime _,
       {bool showBottomSheet = true}) async {
     try {
@@ -310,9 +353,26 @@ class _HistoryPageState extends State<HistoryPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  '${detail.trainingTitle} (${detail.startTime} - ${detail.endTime})',
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        '${detail.trainingTitle} (${detail.startTime} - ${detail.endTime})',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete_forever,
+                                          color: Colors.red),
+                                      tooltip: 'Delete Session',
+                                      onPressed: () => _confirmAndDeleteSession(
+                                          detail.trainingId),
+                                    ),
+                                  ],
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(

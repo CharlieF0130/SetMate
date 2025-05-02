@@ -1,4 +1,5 @@
 class DailyTrainingDetail {
+  final int trainingId;
   final String trainingTitle;
   final String note;
   final String startTime;
@@ -6,6 +7,7 @@ class DailyTrainingDetail {
   final List<Exercise> exercises;
 
   DailyTrainingDetail({
+    required this.trainingId,
     required this.trainingTitle,
     required this.note,
     required this.startTime,
@@ -13,23 +15,23 @@ class DailyTrainingDetail {
     required this.exercises,
   });
   Map<String, dynamic> toJson() => {
-  'trainingTitle': trainingTitle,
-  'note': note,
-  'startTime': startTime,
-  'endTime': endTime,
-  'exercises': exercises.map((e) => e.toJson()).toList(),
-};
-
+        'trainingId': trainingId,
+        'trainingTitle': trainingTitle,
+        'note': note,
+        'startTime': startTime,
+        'endTime': endTime,
+        'exercises': exercises.map((e) => e.toJson()).toList(),
+      };
 
   factory DailyTrainingDetail.fromJson(Map<String, dynamic> json) {
     return DailyTrainingDetail(
+      trainingId: json['trainingId'],
       trainingTitle: json['trainingTitle'],
       note: json['note'] ?? '',
       startTime: json['startTime'],
       endTime: json['endTime'],
-      exercises: (json['exercises'] as List)
-          .map((e) => Exercise.fromJson(e))
-          .toList(),
+      exercises:
+          (json['exercises'] as List).map((e) => Exercise.fromJson(e)).toList(),
     );
   }
 }
@@ -51,18 +53,16 @@ class Exercise {
     required this.weight,
     this.restTime,
     this.type,
-  }
-  );
+  });
   Map<String, dynamic> toJson() => {
-  'exerciseId': exerciseId,
-  'exerciseName': exerciseName,
-  'sets': sets,
-  'reps': reps,
-  'weight': weight,
-  'type': type,
-  'restTime': restTime,
-};
-
+        'exerciseId': exerciseId,
+        'exerciseName': exerciseName,
+        'sets': sets,
+        'reps': reps,
+        'weight': weight,
+        'type': type,
+        'restTime': restTime,
+      };
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
     return Exercise(
@@ -76,5 +76,3 @@ class Exercise {
     );
   }
 }
-
-

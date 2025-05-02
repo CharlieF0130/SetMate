@@ -30,4 +30,9 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
     public Optional<TrainingSession> getSessionById(Integer trainingId) {
         return sessionRepository.findById(trainingId);
     }
+    @Override
+    public void deleteSessionById(Integer trainingId) {
+        sessionRepository.deleteById(trainingId);
+    }
+
 } 

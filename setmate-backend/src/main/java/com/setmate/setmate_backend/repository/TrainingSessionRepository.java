@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TrainingSessionRepository extends JpaRepository<TrainingSession, Integer> {
     List<TrainingSession> findByUserId(Integer userId);
+    void deleteByTrainingId(Integer trainingId);
 }

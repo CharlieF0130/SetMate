@@ -8,4 +8,6 @@ public interface TrainingSessionService {
     TrainingSession addSession(TrainingSession session);
     List<TrainingSession> getSessionsByUserId(Integer userId);
     Optional<TrainingSession> getSessionById(Integer trainingId);
+    void deleteSessionById(Integer trainingId);
+
 }

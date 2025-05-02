@@ -10,6 +10,8 @@ const String completeUrl = '$baseUrl/api/training/complete';
 const String historyUrl = '$baseUrl/api/history';
 const String profileUrl = '$baseUrl/api/user-profile';
 const String exerciseUrl = '$baseUrl/api/exercises';
+const String trainingUrl = '$baseUrl/api/training'; 
+
 
 
 const Color kBackgroundColor = Color(0xFFF5F5F5);

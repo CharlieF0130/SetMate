@@ -11,13 +11,20 @@ public class DailyTrainingDetailDTO {
     private LocalTime startTime;
     private LocalTime endTime;
     private List<TrainingExercise> exercises;
+    private Integer trainingId;
 
-    public DailyTrainingDetailDTO(String trainingTitle, String note, LocalTime startTime, LocalTime endTime, List<TrainingExercise> exercises) {
+    public DailyTrainingDetailDTO(Integer trainingId, String trainingTitle, String note,
+                                  LocalTime startTime, LocalTime endTime, List<TrainingExercise> exercises) {
+        this.trainingId = trainingId;
         this.trainingTitle = trainingTitle;
         this.note = note;
         this.startTime = startTime;
         this.endTime = endTime;
         this.exercises = exercises;
+    }
+
+    public Integer getTrainingId() {
+        return trainingId;
     }
 
     public String getTrainingTitle() {

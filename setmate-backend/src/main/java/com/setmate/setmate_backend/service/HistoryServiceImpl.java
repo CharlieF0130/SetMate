@@ -114,7 +114,8 @@ public class HistoryServiceImpl implements HistoryService {
                     }
                 }
 
-                dto = new DailyTrainingDetailDTO(title, note, startTime.toLocalTime(), endTime.toLocalTime(), exercises);
+                dto = new DailyTrainingDetailDTO(trainingId, title, note, startTime.toLocalTime(), endTime.toLocalTime(), exercises);
+
             } else {
                 throw new RuntimeException("No training found for this date");
             }
@@ -175,12 +176,14 @@ public class HistoryServiceImpl implements HistoryService {
                 }
 
                 DailyTrainingDetailDTO dto = new DailyTrainingDetailDTO(
+                        trainingId,
                         title,
                         note,
                         startTime.toLocalTime(),
                         endTime.toLocalTime(),
                         exercises
                 );
+
 
                 result.add(dto);
             }

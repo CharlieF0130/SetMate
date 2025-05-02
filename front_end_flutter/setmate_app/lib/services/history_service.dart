@@ -93,6 +93,19 @@ static Future<bool> deleteExercise(int exerciseId) async {
   print('🗑️ DELETE RESPONSE: ${response.statusCode} - ${response.body}');
   return response.statusCode == 200;
 }
+static Future<bool> deleteSession(int trainingId) async {
+  final headers = await TokenService.getAuthHeader();
+
+  final response = await http.delete(
+    Uri.parse('$trainingUrl/$trainingId'), // 👈 这里用 trainingUrl
+    headers: headers,
+  );
+
+  print('🗑️ DELETE SESSION RESPONSE: ${response.statusCode} - ${response.body}');
+  return response.statusCode == 200;
+}
+
+
 
 
 }

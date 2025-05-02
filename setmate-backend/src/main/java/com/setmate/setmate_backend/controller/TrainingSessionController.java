@@ -108,6 +108,31 @@ public class TrainingSessionController {
                 "trainingSession", savedSession,
                 "exercises", savedExercises
         ));
+
     }
+    @DeleteMapping("/{trainingId}")
+    public ResponseEntity<?> deleteTrainingSession(@PathVariable Integer trainingId) {
+        String username = getCurrentUsername();
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        TrainingSession session = trainingSessionService.getSessionById(trainingId)
+                .orElseThrow(() -> new RuntimeException("Training session not found"));
+
+        // 权限检查
+        if (!session.getUserId().equals(user.getUserId())) {
+            return ResponseEntity.status(403).body("⛔️ You do not have permission to delete this session.");
+        }
+
+        // 删除所有 exercises
+        List<TrainingExercise> exercises = exerciseService.getExercisesByTrainingId(trainingId);
+        exercises.forEach(e -> exerciseService.deleteExerciseById(e.getExerciseId()));
+
+        // 删除 session 本体
+        trainingSessionService.deleteSessionById(trainingId);
+
+        return ResponseEntity.ok("✅ Training session and its exercises deleted.");
+    }
+
 
 }
