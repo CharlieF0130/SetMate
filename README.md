@@ -15,9 +15,10 @@ All rights reserved. You may not copy, reuse, or modify any part of this reposit
 
 #### Run the backend:
    ```bash
-   cd setmate_backend
+   cd cd setmate-backend/
    mvn spring-boot:run
    ```
+if you use IntelliJ, you can Go directly to SetmateBackendApplication.java and click the run button
 
 ---
 
@@ -25,15 +26,13 @@ All rights reserved. You may not copy, reuse, or modify any part of this reposit
 
 #### ✅ Requirements
 - Flutter SDK
-- Android/iOS emulator or physical device
+- iOS emulator or physical device
 
 #### ⚙️ Configuration
 
-1. Update the API base URL (e.g., in `lib/services/api_constants.dart`):
-   ```dart
-   const String BASE_URL = 'http://10.0.2.2:8080/api'; // for Android Emulator
-   ```
-
+1. Please use in ios Emulator
+   
+  
 2. Install dependencies:
    ```bash
    cd front_end_flutter
