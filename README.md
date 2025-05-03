@@ -20,6 +20,51 @@ All rights reserved. You may not copy, reuse, or modify any part of this reposit
    ```
 if you use IntelliJ, you can Go directly to SetmateBackendApplication.java and click the run button
 
+
+---
+If you encounter the following error when running the backend:
+
+```
+Fatal error compiling: error: release version 21 not supported
+```
+
+It means your system or Maven is using an older version of Java (e.g., Java 17 or Java 8).
+
+### ✅ Temporary Fix (Terminal Only)
+
+Run this command in your terminal to switch to Java 21 temporarily:
+
+```bash
+export JAVA_HOME=$(/usr/libexec/java_home -v 21) && export PATH=$JAVA_HOME/bin:$PATH && mvn clean spring-boot:run
+
+```
+
+### ✅ Permanent Fix (Recommended)
+
+1. Open your terminal and edit your shell config file:
+   ```bash
+   nano ~/.zshrc
+   ```
+
+2. Add these lines at the end of the file:
+   ```bash
+   export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+   export PATH=$JAVA_HOME/bin:$PATH
+   ```
+
+3. Save and apply changes:
+   ```bash
+   source ~/.zshrc
+   ```
+
+4. Verify the Java version:
+   ```bash
+   java -version
+   mvn -v
+   ```
+
+You should now see output showing Java 21 is being used.
+
 ---
 
 ### 📱 Frontend (Flutter)
